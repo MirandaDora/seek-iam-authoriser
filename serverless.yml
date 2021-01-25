@@ -1,0 +1,45 @@
+service: seek-iam-authorisation-service
+useDotenv: true
+provider:
+  name: aws
+  stage: ${env:STAGE}
+  region: ap-southeast-2
+  runtime: nodejs12.x
+  timeout: 28
+  environment:
+    AUTH0_AUDIENCE: ${env:AUTH0_AUDIENCE}
+    AUTH0_TOKEN_ISSUER: ${env:AUTH0_TOKEN_ISSUER}
+    AUTH0_JWKS_URI: ${env:AUTH0_JWKS_URI}
+resources: # The "Resources" your "Functions" use.  Raw AWS CloudFormation goes in here.
+  Resources:
+    AuthRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ${self:service}-lambda-role-${self:provider.stage}
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: ${self:service}-cloudwatch-policy-${self:provider.stage}
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                    - logs:DescribeLogGroups
+                    - logs:DescribeLogStreams
+                  Resource:
+                    - arn:aws:logs:${self:provider.region}:${env:ACCOUNT_ID}:log-group:*:*:*
+functions: # Your "Functions"
+  Auth0TokenAuthroizer:
+    handler: auth0-token-authroizer-handler.authenticateHandler
+    role: AuthRole
+

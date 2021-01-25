@@ -1,0 +1,30 @@
+{
+  "name": "lot-authorisation-service",
+  "version": "1.0.0",
+  "description": "Responsible for API authorization",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "lint": "standard",
+    "fix-lint": "standard --fix",
+    "offline": "STAGE=development DEBUG=* SLS_DEBUG=* serverless offline start --port 4000 --skipCacheInvalidation --noAuth",
+    "deploy": "serverless deploy -v --aws-profile miranda-personal-admin"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://mirandali1020@bitbucket.org/cxzltd/lot-authorisation-service.git"
+  },
+  "author": "Connexionltd",
+  "homepage": "https://bitbucket.org/cxzltd/lot-authorisation-service#readme",
+  "dependencies": {
+    "config": "^3.3.3",
+    "dotenv": "^8.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "jwks-rsa": "^1.11.0",
+    "lodash": "^4.17.20",
+    "serverless": "^2.14.0"
+  },
+  "devDependencies": {
+    "standard": "^14.3.4"
+  }
+}

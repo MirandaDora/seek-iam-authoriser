@@ -1,0 +1,33 @@
+# This is an example Starter pipeline configuration
+# Use a skeleton to build, test and deploy using manual and parallel steps
+# -----
+# You can specify a custom docker image from Docker Hub as your build environment.
+image: atlassian/default-image:2
+
+pipelines:
+  default:
+    - step:
+        script:
+        - npm install
+        - npm run lint
+  branches:
+    development:
+      - step:
+          name: Build and Deploy to development
+          image: cxzltd/node1213-awscli-awssdk:latest
+          deployment: development
+          script:
+            - aws configure set aws_access_key_id $LOT_DEV_DEPLOY_AWS_ACCESS_KEY_ID
+            - aws configure set aws_secret_access_key $LOT_DEV_DEPLOY_AWS_SECRET_ACCESS_KEY
+            - npm install
+            - npm run deploy
+    master:
+      - step:
+          name: Build and Deploy to master
+          deployment: production
+          image: cxzltd/node1213-awscli-awssdk:latest
+          script:
+            - aws configure set aws_access_key_id $LOT_PROD_DEPLOY_AWS_ACCESS_KEY_ID
+            - aws configure set aws_secret_access_key $LOT_PROD_DEPLOY_AWS_SECRET_ACCESS_KEY
+            - npm install
+            - npm run deploy
